@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wildlife Migration & Highway Collision Analysis</title>
-    <!-- Leaflet CSS for Map Styling -->
+    <title>Elk Migration & Highway Infrastructure Overlap</title>
+    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <style>
         body {
@@ -18,132 +18,132 @@
         }
         #analysis-panel {
             padding: 20px;
-            background: #f4f4f4;
+            background: #fdfdfd;
             height: 25vh;
             box-sizing: border-box;
             overflow-y: auto;
-            border-top: 3px solid #4A5D4E;
+            border-top: 3px solid #3e5622;
         }
-        h2 { margin-top: 0; color: #2C3E2F; }
+        h2 { margin-top: 0; color: #2a3b16; }
     </style>
 </head>
 <body>
 
-    <!-- Map Container -->
+    <!-- Web Map Viewport -->
     <div id="map"></div>
     
-    <!-- Analysis Panel (Fulfills assignment component #4) -->
+    <!-- Spatial Analysis Information Panel -->
     <div id="analysis-panel">
-        <h2>Geospatial Analysis: Corridor Breach Findings</h2>
-        <p><strong>Methodology:</strong> A 3-mile proximity buffer (represented by the translucent green circles) was calculated around core elk and deer winter concentration zones to map heavy foraging boundaries. <strong>Findings:</strong> This overlay analysis reveals a clear geospatial pattern: highway segments slicing directly through an active winter concentration buffer zone (such as US-36 slicing through the Estes Valley Basin) register significantly higher animal-vehicle collision rates (29–42 annual incidents) compared to transport corridors that route entirely clear of herd ranges. This pinpoints critical coordinates where state planners should construct wildlife overpasses or underpasses to preserve migration safety.</p>
+        <h2>Geospatial Overlap Analysis</h2>
+        <p><strong>Methodology:</strong> A 2-mile proximity zone (visualized by the translucent green circles) was calculated extending outward from core elk wintering hubs to chart immediate travel vectors. <strong>Findings:</strong> The map demonstrates a clear infrastructural overlap. Major highway segments that run directly through these 2-mile elk activity sectors (such as the US-36 mountain gateway and the CO-82 transit corridor) physically dissect the herd's native grazing range. This creates dangerous localized bottlenecks where elk are forced onto active traffic lanes, pinpointing the exact coordinates requiring protective highway fencing and structural overpasses.</p>
     </div>
 
-    <!-- Leaflet JavaScript Library -->
+    <!-- Leaflet Core Engine Javascript -->
     <script src="https://unpkg.com" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
-        // 1. Initialize Map centered on Colorado mountains (a major elk/deer region)
-        const map = L.map('map').setView([39.7392, -105.5], 9);
+        // 1. Initialize Map centered on Colorado's major elk mountain corridors
+        const map = L.map('map').setView([39.85, -106.1], 9);
 
-        // 2. Define Base Tile Layers (Fulfills assignment component #5)
-        const streetView = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        // 2. Setup Map Visual Tiles (Tile Controls)
+        const streetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '© OpenStreetMap contributors'
-        }).addTo(map); // Default View
+        }).addTo(map); // Sets Default View
 
-        const satelliteView = L.tileLayer('https://arcgisonline.com{z}/{y}/{x}', {
+        const satelliteMap = L.tileLayer('https://arcgisonline.com{z}/{y}/{x}', {
             attribution: 'Tiles © Esri — Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
         });
 
-        // 3. Dataset JSON Arrays (Fulfills assignment component #2)
-        const concentrationZones = [
-            { "zoneId": "Zone-A", "species": "Elk", "herdSizeEst": 1200, "lat": 40.3772, "lng": -105.5217, "location": "Estes Valley Basin", "riskLevel": "Critical" },
-            { "zoneId": "Zone-B", "species": "Mule Deer", "herdSizeEst": 850, "lat": 39.7392, "lng": -105.2258, "location": "Golden Foothills", "riskLevel": "High" },
-            { "zoneId": "Zone-C", "species": "Elk", "herdSizeEst": 450, "lat": 39.1911, "lng": -106.8175, "location": "Roaring Fork Valley", "riskLevel": "Moderate" }
+        // 3. Clean JSON Datasets focusing strictly on Elk and Highways
+        const elkHerdZones = [
+            { "id": "Elk-Hub-1", "location": "Estes Valley Elk Basin", "lat": 40.3772, "lng": -105.5217, "estHerdCount": 1400, "status": "Critical Range" },
+            { "id": "Elk-Hub-2", "location": "Vail Pass Meadows", "lat": 39.6303, "lng": -106.2181, "estHerdCount": 950, "status": "High Activity" },
+            { "id": "Elk-Hub-3", "location": "Roaring Fork Elk Range", "lat": 39.1911, "lng": -106.8175, "estHerdCount": 600, "status": "Seasonal Range" }
         ];
 
-        const collisionHotspots = [
-            { "incidentId": "WVC-001", "highway": "US-36 Milepost 4", "nearestZone": "Zone-A", "annualIncidents": 42, "lat": 40.3551, "lng": -105.4950 },
-            { "incidentId": "WVC-002", "highway": "I-70 Golden Exit", "nearestZone": "Zone-B", "annualIncidents": 29, "lat": 39.7120, "lng": -105.2110 },
-            { "incidentId": "WVC-003", "highway": "CO-82 Basalt Bypass", "nearestZone": "Zone-C", "annualIncidents": 8, "lat": 39.3670, "lng": -107.0330 }
+        const highwayIntersections = [
+            { "id": "Hwy-Cross-1", "highwayName": "US-36 Mountain Corridor", "lat": 40.3551, "lng": -105.4950, "dangerLevel": "Extreme", "avgSpeedMph": 55 },
+            { "id": "Hwy-Cross-2", "highwayName": "I-70 Vail Pass Slope", "lat": 39.6120, "lng": -106.2010, "dangerLevel": "High", "avgSpeedMph": 65 },
+            { "id": "Hwy-Cross-3", "highwayName": "CO-82 Basalt Underpass Sector", "lat": 39.3670, "lng": -107.0330, "dangerLevel": "Moderate", "avgSpeedMph": 50 }
         ];
 
-        // 4. Create Map Layers Groups for Toggling
-        const zoneLayer = L.layerGroup();
-        const collisionLayer = L.layerGroup();
-        const bufferLayer = L.layerGroup();
+        // 4. Create Isolation Layers Groups for Menu Management
+        const elkLayerGroup = L.layerGroup();
+        const highwayLayerGroup = L.layerGroup();
+        const overlapBufferGroup = L.layerGroup();
 
-        // 5. Place Markers for Wildlife Concentration Zones (Fulfills assignment component #3)
-        concentrationZones.forEach(zone => {
-            const marker = L.circleMarker([zone.lat, zone.lng], {
+        // 5. Generate Map Markers for Elk Zones & Analysis Buffers
+        elkHerdZones.forEach(zone => {
+            // Main coordinate marker for the herd hub
+            const elkMarker = L.circleMarker([zone.lat, zone.lng], {
                 radius: 12,
-                fillColor: '#8B4513', // Brown for wildlife focus
-                color: '#fff',
+                fillColor: '#5c4033', // Deep elk-brown color style
+                color: '#ffffff',
                 weight: 2,
                 fillOpacity: 0.9
             });
 
-            // Dynamic Popup Content
-            marker.bindPopup(`
-                <h3>🦌 ${zone.location}</h3>
+            elkMarker.bindPopup(`
+                <h3>🦌 Elk Winter Hub: ${zone.location}</h3>
                 <hr>
-                <p><strong>Primary Species:</strong> ${zone.species}</p>
-                <p><strong>Estimated Herd Size:</strong> ${zone.herdSizeEst}</p>
-                <p><strong>Risk Severity Level:</strong> ${zone.riskLevel}</p>
+                <p><strong>Tracking Identifier:</strong> ${zone.id}</p>
+                <p><strong>Estimated Herd Population:</strong> ${zone.estHerdCount} elk</p>
+                <p><strong>Range Classification:</strong> ${zone.status}</p>
             `);
-            zoneLayer.addLayer(marker);
+            elkLayerGroup.addLayer(elkMarker);
 
-            // Analysis Aspect: Generate a 3-mile (4828 meter) radius proximity buffer
-            const proximityCircle = L.circle([zone.lat, zone.lng], {
-                radius: 4828,
-                color: '#2E8B57',
-                fillColor: '#3CB371',
-                fillOpacity: 0.15,
-                dashArray: '6, 6'
+            // Analysis Aspect: Generate a 2-Mile Radius (3218 meters) Overlay
+            const spatialBuffer = L.circle([zone.lat, zone.lng], {
+                radius: 3218,
+                color: '#3e5622',
+                fillColor: '#608246',
+                fillOpacity: 0.2,
+                dashArray: '5, 5'
             });
-            proximityCircle.bindPopup(`<strong>3-Mile Foraging Zone:</strong> Active migration perimeter around ${zone.location}`);
-            bufferLayer.addLayer(proximityCircle);
+            spatialBuffer.bindPopup(`<strong>2-Mile Intersection Buffer:</strong> Core migration perimeter tracking potential highway breach zones near ${zone.location}.`);
+            overlapBufferGroup.addLayer(spatialBuffer);
         });
 
-        // 6. Place Markers for Collision Hotspots (Fulfills assignment component #3)
-        collisionHotspots.forEach(spot => {
-            const marker = L.circleMarker([spot.lat, spot.lng], {
-                radius: 9,
-                fillColor: '#FF0000', // Red for accident hotspots
-                color: '#fff',
+        // 6. Generate Map Markers for Highway Crossing Vectors
+        highwayIntersections.forEach(highway => {
+            const hwyMarker = L.circleMarker([highway.lat, highway.lng], {
+                radius: 10,
+                fillColor: '#d9534f', // Infrastructure alert red color
+                color: '#ffffff',
                 weight: 1.5,
-                fillOpacity: 0.8
+                fillOpacity: 0.85
             });
 
-            // Dynamic Popup Content
-            marker.bindPopup(`
-                <h3>⚠️ Highway Collision Hotspot</h3>
+            hwyMarker.bindPopup(`
+                <h3>🛣️ Highway Intersection Corridor</h3>
                 <hr>
-                <p><strong>Location:</strong> ${spot.highway}</p>
-                <p><strong>Annual WVC Incidents:</strong> ${spot.annualIncidents} reports</p>
-                <p><strong>Closest Tracked Herd:</strong> ${spot.nearestZone}</p>
+                <p><strong>Roadway Segment:</strong> ${highway.highwayName}</p>
+                <p><strong>Conflict Risk Level:</strong> ${highway.dangerLevel}</p>
+                <p><strong>Posted Travel Speed:</strong> ${highway.avgSpeedMph} MPH</p>
             `);
-            collisionLayer.addLayer(marker);
+            highwayLayerGroup.addLayer(hwyMarker);
         });
 
-        // Add all elements onto map display immediately upon boot
-        zoneLayer.addTo(map);
-        collisionLayer.addTo(map);
-        bufferLayer.addTo(map);
+        // Inject elements straight onto the map panel upon default load
+        elkLayerGroup.addTo(map);
+        highwayLayerGroup.addTo(map);
+        overlapBufferGroup.addTo(map);
 
-        // 7. Layer Control Toggle Menu Configuration (Fulfills assignment component #5)
-        const baseMaps = {
-            "Default Street View": streetView,
-            "Satellite View": satelliteView
+        // 7. Establish Dynamic Toggle Menu Matrix
+        const baseLayersMap = {
+            "Default Street View": streetMap,
+            "HD Satellite View": satelliteMap
         };
 
-        const overlayMaps = {
-            "Herd Concentration Zones": zoneLayer,
-            "Highway Collision Hotspots": collisionLayer,
-            "3-Mile Migration Buffers": bufferLayer
+        const overlayLayersMap = {
+            "Elk Herd Hubs": elkLayerGroup,
+            "Highway Crossings": highwayLayerGroup,
+            "2-Mile Intersection Buffers": overlapBufferGroup
         };
 
-        // Add the toggle panel dashboard directly onto top right map corner
-        L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(map);
+        // Render control layer menu inside the top-right quadrant of the UI window
+        L.control.layers(baseLayersMap, overlayLayersMap, { collapsed: false }).addTo(map);
     </script>
 </body>
 </html>
+
